@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{message.now}}
+    </div>
+</body>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: {now: "test"}
+        },
+        methods: {
+            loadData: function () {
+                var self = this;
+                axios.get('/now')
+                    .then(function (response) {
+                        self.message = response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        mounted: function () {
+            this.loadData();
+            this.interval = setInterval(function () {
+                this.loadData();
+            }.bind(this), 1000);
+        },
+        beforeDestroy: function(){
+            clearInterval(this.interval);
+        }
+    });
+</script>
+</html>
